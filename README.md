@@ -1,8 +1,8 @@
 # Awesome-Deepfake-Detection-I-Read
 Just I read, share rose to get fun.
 # 目录
-- [LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024](LAA)
-- [Unlocking the Hidden Potential of CLIP in Generalizable Deepfake Detection, arXiv 2025](2025CLIP)
+- [LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024](#LAA)
+- [Unlocking the Hidden Potential of CLIP in Generalizable Deepfake Detection, arXiv 2025](#2025CLIP)
 <span id="LAA"></span>
 ## LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024: [Paper](https://arxiv.org/pdf/2401.13856) [Code](https://github.com/10Ring/LAA-Net)
 ---
