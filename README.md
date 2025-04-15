@@ -1,8 +1,9 @@
 # Awesome-Deepfake-Detection-I-Read
 Just I read, share rose to get fun.
 # 目录
-- [LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024](https://arxiv.org/pdf/2401.13856)
-- [Unlocking the Hidden Potential of CLIP in Generalizable Deepfake Detection, arXiv 2025](https://arxiv.org/pdf/2503.19683)
+- [LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024](LAA)
+- [Unlocking the Hidden Potential of CLIP in Generalizable Deepfake Detection, arXiv 2025](2025CLIP)
+<span id="LAA"></span>
 ## LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024: [Paper](https://arxiv.org/pdf/2401.13856) [Code](https://github.com/10Ring/LAA-Net)
 ---
 
@@ -80,7 +81,7 @@ Just I read, share rose to get fun.
 **类比总结**：  
 LAA-Net像一个经验丰富的鉴宝师，不仅观察文物的整体（全局特征），还会用放大镜仔细检查接缝、刻痕等细节（局部伪影），甚至比对不同部位的材质一致性（自一致性）。这种“细节+全局”的双重验证，让它能识破更高明的赝品。
 在 Markdown 中，可以通过以下方式插入超链接和生成目录：
-
+<span id="2025CLIP"></span>
 ## Unlocking the Hidden Potential of CLIP in Generalizable Deepfake Detection, arXiv 2025: [Paper](https://arxiv.org/pdf/2503.19683), [Code](https://github.com/yermandy/deepfake-detection)
 这篇文章详细探讨了如何利用 CLIP 模型（Contrastive Language-Image Pretraining）在深度伪造检测中的潜力，并提出了一种基于 CLIP 的检测方法。文章的核心目标是开发一种通用的深度伪造检测方法，能够在多种数据集和未知的伪造技术上表现良好，同时对 CLIP 模型进行最小的修改。
 
