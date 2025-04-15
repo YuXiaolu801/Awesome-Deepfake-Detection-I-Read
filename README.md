@@ -3,6 +3,7 @@ Just I read, share rose to get fun.
 # 目录
 - [LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024](#LAA)
 - [Unlocking the Hidden Potential of CLIP in Generalizable Deepfake Detection, arXiv 2025](#2025CLIP)
+- [Rethinking Vision-Language Model in Face Forensics: Multi-Modal Interpretable Forged Face Detector, arXiv, 2025](#2025VLM)
 <span id="LAA"></span>
 ## LAA-Net: Localized Artifact Attention Network for Quality-Agnostic and Generalizable Deepfake Detection, CVPR 2024: [Paper](https://arxiv.org/pdf/2401.13856) [Code](https://github.com/10Ring/LAA-Net)
 ---
@@ -158,3 +159,87 @@ LAA-Net像一个经验丰富的鉴宝师，不仅观察文物的整体（全局�
 
 ### **3. 结论**
 文章展示了 CLIP 模型在深度伪造检测中的潜力，并提出了一种简单而强大的基线方法。通过参数高效的微调和正则化技术，该方法在多个基准测试中表现出色。尽管如此，文章也指出了一些挑战，例如在 DFDC 数据集上的性能可以进一步提高，并建议未来的工作可以探索多模态方法和时空信息。
+<span id="2025VLM"></span>
+## Rethinking Vision-Language Model in Face Forensics: Multi-Modal Interpretable Forged Face Detector, arXiv, 2025: [Paper](https://arxiv.org/pdf/2503.20188), [Code](https://github.com/CHELSEA234/M2F2_Det)
+### 文章详细解释
+
+#### 1. 研究背景与目标  
+本文针对**深度伪造检测**（Deepfake Detection）的**泛化性**和**可解释性**两大挑战展开研究。传统方法通常仅输出二分类结果（真实/伪造）或独立的文本解释，而本文提出的**M2F2-Det**（Multi-Modal Interpretable Forged Face Detector）首次实现了**检测结果与文本解释的同步生成**。通过结合CLIP的多模态学习能力和大型语言模型（LLM）的解释生成能力，M2F2-Det不仅提升了检测精度，还增强了用户对检测决策的信任。
+
+---
+
+### 提出的方法
+
+#### 2.1 核心框架  
+M2F2-Det由三个核心组件构成：  
+1. **CLIP视觉编码器**（ $\mathcal{E}_I$ ）：提取输入图像的通用视觉特征。  
+2. **深度伪造编码器**（ $\mathcal{E}_D$ ）：提供针对伪造特征的领域知识。  
+3. **大型语言模型**（LLM）：基于视觉特征生成文本解释。  
+
+通过**Bridge Adapter**（桥接适配器）和**Forgery Prompt Learning**（伪造提示学习）实现三者的高效协作。
+
+#### 2.2 Forgery Prompt Learning（FPL）  
+FPL通过优化两类可学习提示，将CLIP适配到深度伪造检测任务：  
+1. **Universal Forgery Prompts（UF-prompts）**：包含通用伪造标记（捕捉跨数据集的共性伪造模式，如边缘模糊）和特定伪造标记（编码图像依赖的细粒度伪造特征，如眼部异常）。  
+   - 公式：  
+     $\mathbf{S} = [\mathbf{v}^G_1] \ldots [\mathbf{v}^G_m][\mathbf{v}^S_1] \ldots [\mathbf{v}^S_u][\text{forged}][\text{face}]$
+     
+     $\mathbf{v}^G为通用标记，\mathbf{v}^S为特定标记，通过MLP从图像特征动态生成。$
+2. **Layer-wise Forgery Tokens（LF-tokens）**：在CLIP文本编码器的每一层引入可学习的伪造标记，增强对伪造语义的适配能力（图3b）。  
+
+FPL生成**伪造注意力图**（ $\mathbf{M}_b$ ），通过计算图像块与文本提示的余弦相似度定位伪造区域，为检测提供空间先验知识。
+
+#### 2.3 Bridge Adapter（桥接适配器）  
+Bridge Adapter（ $\mathcal{E}_A$ ）是连接CLIP视觉编码器与深度伪造编码器的关键模块：  
+1. **特征融合**：将CLIP的中间特征（ $\mathcal{E}_I$ ）与深度伪造编码器的输出（ $\mathcal{E}_D$ ）融合，生成鲁棒的伪造表示 $\mathbf{F}^0$ 。  
+2. **频率令牌生成**：将 $\mathbf{F}^0$ 转换为频率令牌 $\mathbf{H}_F$ ，与CLIP的视觉令牌 $\mathbf{H}_V$ 共同输入LLM，指导解释生成。  
+
+#### 2.4 解释生成模块  
+LLM（如Vicuna-7b）基于视觉令牌（ $\mathbf{H}_V$ ）和频率令牌（ $\mathbf{H}_F$ ）生成检测结果及解释：  
+- **频率令牌**：编码伪造特征的频域信息（如高频噪声），帮助LLM捕捉真实与伪造图像的差异。  
+- 生成概率公式扩展为：
+
+  $$
+  p(\mathbf{X}_A | \mathbf{H}_V, \mathbf{H}_F,\mathbf{H}_T) = \prod_{z=1}^Z p_\theta(\mathbf{x}_z | \mathbf{H}_V, \mathbf{H}_F, \mathbf{H}_{T,<z}, \mathbf{x}_{A,<z})
+  $$
+---
+
+### 实验设计与结果
+
+#### 3.1 数据集与评估指标  
+- **检测任务**：FaceForensics++（FF++）、Celeb-DF（CDF）、DFDC等6个数据集，指标为AUC和准确率。  
+- **解释任务**：DD-VQA数据集，指标包括关键词准确率（F1）、BLEU-4、CIDEr、ROUGE-L等。  
+
+#### 3.2 检测性能  
+1. **同数据集测试**（表2）：  
+   - FF++（c40）：M2F2-Det的AUC达**96.58%**，超越TALL（94.57%）和RECCE（95.02%）。  
+   - Celeb-DF：AUC达**99.92%**，优于多数时序模型。  
+2. **跨数据集测试**（表3）：  
+   - DFDC和FFIW上的AUC分别为**87.80%**和**88.70%**，优于FreqBlender（87.56%和86.14%）。  
+
+#### 3.3 解释生成性能  
+1. **关键词准确率**（图5a）：M2F2-Det的准确率（86.05%）显著高于DDVQA-BLIP（68.31%）和LLaVA（81.54%）。  
+2. **语义一致性**（图5b）：CIDEr得分达**1.92**，优于基线模型（如LLaVA的1.48），表明生成解释更贴近人工标注。  
+3. **定性结果**（图6）：M2F2-Det能精准定位伪造区域（如模糊发际线、眼部不自然纹理），并生成详细解释，而DDVQA-BLIP和GPT-4o常出现误判或模糊描述。  
+
+#### 3.4 消融实验与关键分析  
+1. **伪造注意力图**（表4）：  
+   - 仅使用UF-prompts或LF-tokens分别提升AUC至92.57%和92.66%，联合使用后达93.65%。  
+   - 加入Bridge Adapter后，AUC进一步提升至**96.58%**（FF++ c40）。  
+2. **频率令牌的作用**：移除\(\mathbf{H}_F\)导致关键词准确率下降10.12%，验证其重要性。  
+3. **与CLIP基线的对比**（表5）：  
+   - M2F2-Det的AUC（96.58%）显著高于Uni-Fake（72.40%）和DEFAKE（76.84%）。  
+
+---
+
+### 贡献与展望  
+- **贡献**：  
+  1. 首个多模态可解释深度伪造检测框架，同步输出检测结果与文本解释。  
+  2. 提出**Forgery Prompt Learning**，高效适配CLIP至伪造检测任务。  
+  3. 通过**Bridge Adapter**融合CLIP与领域知识，提升泛化性。  
+- **未来方向**：  
+  1. 探索更多模态（如音频）增强检测鲁棒性。  
+  2. 优化低频伪造（如DFDC）的检测性能。  
+  3. 扩展至视频时序分析与实时检测场景。  
+
+本文通过多模态协同与可解释性设计，为深度伪造检测提供了新的研究范式，代码已开源以推动后续研究。
